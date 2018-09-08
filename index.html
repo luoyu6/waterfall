@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="author" content="luoyu" />
+		<title>瀑布流</title>
+
+		<style type="text/css">
+			#wraper {
+				width: 1000px;
+				margin: 0 auto;
+			}
+			
+			#wraper ul li {
+				margin: 0 auto;
+				list-style: none;
+				width: 265px;
+				float: left;
+				/*height: 1000px;*/
+				/*background: gray;*/
+				margin-left: 10px;
+			}
+			
+			.dec {
+				display: block;
+				padding: 0 15px;
+			}
+			
+			.time span {
+				display: block;
+				margin-bottom: 5px;
+			}
+			
+			.time a:nth-child(2) {
+				float: left;
+			}
+			
+			.time a:nth-child(3) {
+				float: right;
+			}
+			
+			.time {
+				padding: 10px 15px;
+				/*text-align: center;*/
+			}
+			
+			.clearfix:after {
+				content: '';
+				display: block;
+				clear: both;
+			}
+			
+			.img_box {
+				border: 1px solid #ccc;
+				margin-bottom: 15px;
+			}
+			
+			.img_box img {
+				width: 263px
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="wraper" class="clearfix">
+			<ul>
+				<li>
+					<!--<div class="img_box">
+						<img src="img/1.jpg" width='263' />
+						<a href="" class="dec">你们男神都爱的倪妮 就是个大写哒美好</a>
+						<div class="time clearfix">
+							<a>2016/03/18 20:08</a>
+							<a href="">阅读全文</a>
+						</div>
+
+					</div>-->
+				</li>
+				<li></li>
+				<li></li>
+			</ul>
+		</div>
+	</body>
+	<script src="js/jquery.js"></script>
+	<!--<script src="js/data.js"></script>-->
+	<script type="text/javascript">
+		var li_len = $('#wraper ul li').length;
+		var $li = $('#wraper ul li')
+		var index = 0;
+
+		$.ajax({
+			type: "get",
+			url: "data/data.json",
+			async: true,
+			data: {},
+			success: function(data) {
+				//				console.log(data)
+				//				for(; index < 5; index++) {
+				//					var odiv = createDiv(index);
+				//					var i = getShort();
+				//					$li.eq(i).append(odiv);
+				//		
+				//				}
+
+				//滚动过程中（不包含滚动高度），wraper高度+wraper的top要始终大于窗口高度
+				$(window).scroll(function() {
+
+					var hei = $('#wraper').height() + $('#wraper').offset().top - $(document).scrollTop();
+					console.log(hei)
+					//			console.log($(window).height()+"========="+$(document).scrollTop()+"----"+$(window).scrollTop())
+					if(hei < $(window).height()) {
+						num = index + 5
+
+						show(num);
+					}
+
+				})
+
+				show(10);
+
+				function show(num) {
+					index++;
+					var $div = createDiv(index);
+					var i = getShort();
+					$li.eq(i).append($div);
+					$($div).fadeIn(1000);
+					//	错误1	$li.eq(i).appendChild($div);
+					var $img = $div.getElementsByTagName('img')[0];
+					console.log(typeof $img)
+					$img.onload = function() {
+						if(index < num) {
+							show(num);
+						}
+					}
+
+				}
+
+				function getShort() {
+
+					var a = 0;
+					var $first_li_hei = $('#wraper ul li').eq(0).height();
+
+					for(var i = 0; i < li_len; i++) {
+
+						var li_hei = $('#wraper ul li').eq(i).height();
+						if(li_hei < $first_li_hei) {
+							a = i;
+							$first_li_hei = li_hei;
+
+						}
+
+					}
+					console.log(a + '------')
+					return a;
+
+				}
+				getShort();
+
+				function createDiv(i) {
+					var div_dom = document.createElement('div');
+					//			console.log(div_dom)
+					//			console.log(typeof div_dom)
+					div_dom.className = 'img_box';
+					//			var div_img_dom = document.createElement('img');
+					var div_img_dom = new Image();
+					div_img_dom.src = data[i].src;
+					var div_a_dom = document.createElement('a');
+					div_a_dom.className = 'dec';
+					div_dom.appendChild(div_img_dom);
+					div_dom.appendChild(div_a_dom);
+					//			div_dom.className='img_box';
+
+					var child_div = document.createElement('div');
+					child_div.className = 'time clearfix';
+					div_dom.appendChild(child_div);
+					var child_div_span = document.createElement('span');
+					var child_div_a = document.createElement('a');
+					var child_div_a1 = document.createElement('a');
+					child_div_span.innerHTML = data[i].dec;
+					child_div_a.innerHTML = data[i].time;
+					child_div_a1.innerHTML = '阅读全文';
+					child_div.appendChild(child_div_span);
+					child_div.appendChild(child_div_a);
+					child_div.appendChild(child_div_a1);
+					//			$('#wraper ul li').eq(i).append(div_dom);
+					return div_dom;
+
+				}
+			}
+		});
+	</script>
+
+</html>
