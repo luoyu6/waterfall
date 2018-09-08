@@ -27,19 +27,17 @@
 				padding: 0 15px;
 			}
 			
-			.time span {
+			.time span{
 				display: block;
 				margin-bottom: 5px;
 			}
 			
 			.time a:nth-child(2) {
-				float: left;
+				float:left ;
 			}
-			
 			.time a:nth-child(3) {
-				float: right;
+				float:right ;
 			}
-			
 			.time {
 				padding: 10px 15px;
 				/*text-align: center;*/
@@ -82,112 +80,107 @@
 		</div>
 	</body>
 	<script src="js/jquery.js"></script>
-	<!--<script src="js/data.js"></script>-->
+	<script src="js/data.js"></script>
 	<script type="text/javascript">
 		var li_len = $('#wraper ul li').length;
 		var $li = $('#wraper ul li')
-		var index = 0;
+		var index = -1;
 
-		$.ajax({
-			type: "get",
-			url: "data/data.json",
-			async: true,
-			data: {},
-			success: function(data) {
-				//				console.log(data)
-				//				for(; index < 5; index++) {
-				//					var odiv = createDiv(index);
-				//					var i = getShort();
-				//					$li.eq(i).append(odiv);
-				//		
-				//				}
 
-				//滚动过程中（不包含滚动高度），wraper高度+wraper的top要始终大于窗口高度
-				$(window).scroll(function() {
+		//				for(; index < 5; index++) {
+		//					var odiv = createDiv(index);
+		//					var i = getShort();
+		//					$li.eq(i).append(odiv);
+		//		
+		//				}
 
-					var hei = $('#wraper').height() + $('#wraper').offset().top - $(document).scrollTop();
-					console.log(hei)
-					//			console.log($(window).height()+"========="+$(document).scrollTop()+"----"+$(window).scrollTop())
-					if(hei < $(window).height()) {
-						num = index + 5
+		//滚动过程中（不包含滚动高度），wraper高度+wraper的top要始终大于窗口高度
+		$(window).scroll(function() {
 
-						show(num);
-					}
+			var hei = $('#wraper').height() + $('#wraper').offset().top - $(document).scrollTop();
+			console.log(hei)
+			//			console.log($(window).height()+"========="+$(document).scrollTop()+"----"+$(window).scrollTop())
+			if(hei < $(window).height()) {
+				num = index + 5
+				console.log(num + "============")
+				show(num);
+			}
+			
+		})
 
-				})
+		show(10);
 
-				show(10);
+		function show(num) {
+			index++;
+			var $div = createDiv(index);
+			var i = getShort();
+			$li.eq(i).append($div);
+			$($div).fadeIn(1000);
+			//  错误1			$li.eq(i).appendChild($div);
+			var $img = $div.getElementsByTagName('img')[0];
+			//	错误2		var $img = $div.find('img')[0];
 
-				function show(num) {
-					index++;
-					var $div = createDiv(index);
-					var i = getShort();
-					$li.eq(i).append($div);
-					$($div).fadeIn(1000);
-					//	错误1	$li.eq(i).appendChild($div);
-					var $img = $div.getElementsByTagName('img')[0];
-					console.log(typeof $img)
-					$img.onload = function() {
-						if(index < num) {
-							show(num);
-						}
-					}
+			console.log(typeof $img)
+			$img.onload = function() {
+				if(index < num) {
 
-				}
-
-				function getShort() {
-
-					var a = 0;
-					var $first_li_hei = $('#wraper ul li').eq(0).height();
-
-					for(var i = 0; i < li_len; i++) {
-
-						var li_hei = $('#wraper ul li').eq(i).height();
-						if(li_hei < $first_li_hei) {
-							a = i;
-							$first_li_hei = li_hei;
-
-						}
-
-					}
-					console.log(a + '------')
-					return a;
-
-				}
-				getShort();
-
-				function createDiv(i) {
-					var div_dom = document.createElement('div');
-					//			console.log(div_dom)
-					//			console.log(typeof div_dom)
-					div_dom.className = 'img_box';
-					//			var div_img_dom = document.createElement('img');
-					var div_img_dom = new Image();
-					div_img_dom.src = data[i].src;
-					var div_a_dom = document.createElement('a');
-					div_a_dom.className = 'dec';
-					div_dom.appendChild(div_img_dom);
-					div_dom.appendChild(div_a_dom);
-					//			div_dom.className='img_box';
-
-					var child_div = document.createElement('div');
-					child_div.className = 'time clearfix';
-					div_dom.appendChild(child_div);
-					var child_div_span = document.createElement('span');
-					var child_div_a = document.createElement('a');
-					var child_div_a1 = document.createElement('a');
-					child_div_span.innerHTML = data[i].dec;
-					child_div_a.innerHTML = data[i].time;
-					child_div_a1.innerHTML = '阅读全文';
-					child_div.appendChild(child_div_span);
-					child_div.appendChild(child_div_a);
-					child_div.appendChild(child_div_a1);
-					//			$('#wraper ul li').eq(i).append(div_dom);
-					return div_dom;
-
+					show(num);
 				}
 			}
-		});
+
+		}
+
+		function getShort() {
+
+			var a = 0;
+			var $first_li_hei = $('#wraper ul li').eq(0).height();
+
+			for(var i = 0; i < li_len; i++) {
+
+				var li_hei = $('#wraper ul li').eq(i).height();
+				if(li_hei < $first_li_hei) {
+					a = i;
+					$first_li_hei = li_hei;
+
+				}
+
+			}
+			console.log(a + '------')
+			return a;
+
+		}
+		getShort();
+
+		function createDiv(i) {
+			var div_dom = document.createElement('div');
+			//			console.log(div_dom)
+			//			console.log(typeof div_dom)
+			div_dom.className = 'img_box';
+			//			var div_img_dom = document.createElement('img');
+			var div_img_dom = new Image();
+			div_img_dom.src = imgData[i].src;
+			var div_a_dom = document.createElement('a');
+			div_a_dom.className = 'dec';
+			div_dom.appendChild(div_img_dom);
+			div_dom.appendChild(div_a_dom);
+			//			div_dom.className='img_box';
+
+			var child_div = document.createElement('div');
+			child_div.className = 'time clearfix';
+			div_dom.appendChild(child_div);
+			var child_div_span = document.createElement('span');
+			var child_div_a = document.createElement('a');
+			var child_div_a1 = document.createElement('a');
+			child_div_span.innerHTML = imgData[i].dec;
+			child_div_a.innerHTML = imgData[i].time;
+			child_div_a1.innerHTML = '阅读全文';
+			child_div.appendChild(child_div_span);
+			child_div.appendChild(child_div_a);
+			child_div.appendChild(child_div_a1);
+			//			$('#wraper ul li').eq(i).append(div_dom);
+			return div_dom;
+
+		}
 	</script>
 
 </html>
